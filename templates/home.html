@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Главная — Отель "Оверлук"
+{% endblock %}
+
+{% block content %}
+    <h2>Добро пожаловать!</h2>
+
+    <p>Это сайт системы бронирования номеров отеля "Оверлук".
+    </p>
+
+    <hr>
+    <h2>Номера отеля</h2>
+
+    {% if rooms %}
+        <ul>
+            {% for room in rooms %}
+                <li>
+                    <strong>Номер {{ room.number }}</strong><br>
+                    {{ room.description }}<br>
+                    Количество мест: {{ room.capacity }}<br>
+                    Стоимость за ночь: {{ room.price_per_night }} ₽<br>
+                    Статус: {{ room.get_status_display }}
+                </li>
+                <br>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <p>Номера пока не добавлены.</p>
+    {% endif %}
+
+    <hr>
+    <h2>Предоставляемые услуги</h2>
+
+    {% if services %}
+        <ul>
+            {% for service in services %}
+                <li>
+                    <strong>{{ service.name }}</strong><br>
+                    {{ service.description }}<br>
+                    Стоимость: {{ service.price }} ₽
+                </li>
+                <br>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <p>Услуги пока не добавлены.</p>
+    {% endif %}
+
+{% endblock %}
