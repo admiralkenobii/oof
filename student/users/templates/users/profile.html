@@ -1,0 +1,43 @@
+
+{% extends "myapp/base.html" %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block header %}Личный кабинет{% endblock %}
+
+{% block content %}
+    <p>Логин: {{ request.user.username }}</p>
+    <p>Email: {{ request.user.email }}</p>
+
+    {% if profile %}
+        <p>Роль: {{ profile.get_role_display }}</p>
+
+        {% if profile.role == "student" %}
+            <h2>Информация о студенте</h2>
+            <p>{{ profile.student }}</p>
+
+        {% elif profile.role == "teacher" %}
+            <h2>Информация о преподавателе</h2>
+            <p>{{ profile.teacher }}</p>
+
+            {% if profile.is_approved %}
+                <p>Статус: подтверждён</p>
+            {% else %}
+                <p>Статус: ожидает подтверждения</p>
+            {% endif %}
+        {% endif %}
+
+    {% else %}
+        <p>
+            Для вашей учетной записи профиль ещё не создан.
+        </p>
+
+        {% if request.user.is_superuser %}
+            <p>
+                Вы вошли как суперпользователь Django.
+                Управление пользователями доступно в
+                <a href="/admin/">административной панели</a>.
+            </p>
+        {% endif %}
+    {% endif %}
+{% endblock %}

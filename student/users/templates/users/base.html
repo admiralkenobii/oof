@@ -1,0 +1,71 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>{% block header %}{% endblock %}</h1>
+    </header>
+
+    <main>
+       <nav>
+            <ul>
+                {% block nav %}
+                    <li><a href="{% url 'home' %}">Главная</a></li>
+                    <li><a href="{% url 'about' %}">О нас</a></li>
+
+                    {% if user.is_authenticated %}
+                        {# Общие ссылки для вошедших пользователей #}
+                        <li><a href="{% url 'profile' %}">Личный кабинет</a></li>
+
+                        {% if user.is_superuser %}
+                            {# Только суперпользователь #}
+                            <li><a href="/admin/">Администрирование</a></li>
+                        {% endif %}
+
+                        {% if user.profile.role == "student" %}
+                            <li><a href="{% url 'students' %}">Студенты</a></li>
+                        {% endif %}
+
+                        {% if user.profile.role == "teacher" and user.profile.is_approved %}
+                            <li><a href="{% url 'students' %}">Студенты</a></li>
+                            {# Здесь можно добавить журнал оценок #}
+                        {% endif %}
+
+                        <li>
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit">Выйти</button>
+                            </form>
+                        </li>
+
+                    {% else %}
+                        {# Ссылки для неавторизованных посетителей #}
+                        <li><a href="{% url 'login' %}">Войти</a></li>
+                        <li><a href="{% url 'register_student' %}">Регистрация студента</a></li>
+                        <li><a href="{% url 'register_teacher' %}">Регистрация преподавателя</a></li>
+                    {% endif %}
+                {% endblock %}
+            </ul>
+        </nav>
+        <section>
+            {% block content %}
+            {% endblock %}
+        </section>
+    </main>
+
+    
+    <footer>
+        <p>&copy; {% now "Y" %} - {% block footer %} Копирование запрещено. Все права у студентов самой лучшей группы{% endblock %}</p>
+    </footer>
+
+    {% block js %}
+    {% endblock %}
+</body>
+</html>
